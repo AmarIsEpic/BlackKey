@@ -92,9 +92,43 @@
                     <div class="terminal-line">
                         <span class="output">[*] Initializing password analysis module...</span>
                     </div>
+                    <div class="terminal-line">
+                        <span class="output">[*] Waiting for target input</span>
+                    </div>
+                    <div class="terminal-line input-line">
+                        <span class="prompt">root@blackkey:~@</span>
+                        <span class="cursor">▊</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="simulatoin-section">
+                <h2 class="section-title">// BRUTE-FORCE SIMULATION</h2>
+                <div class="simulatoin-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">TOTAL ATTEMPTS:</span>
+                        <span class="stat-value" id="attempts-per-sec">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">TOTAL ATTEMPTS:</span>
+                        <span class="stat-value" id="total-attempts">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">STATUS:</span>
+                        <span class="stat-value" id="sim-status">IDLE</span>
+                    </div>
+                </div>
+                <div class="attempt-display" id="attempt-display">
+                    <span class="attempt-text">-</span>
                 </div>
             </section>
         </main>
+
+        <footer class="footer">
+            <p>Educational simulation only. No real hacking performed</p>
+        </footer>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
