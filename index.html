@@ -27,6 +27,22 @@
                     class="password-input"
                     placeholder="Enter password to analyze..."
                     autocomplete="off"
+                    >
+                    <button id="toggle-visibility" class="toggle-btn" aria-label="Toggle password visibility">
+                        <span class="eye-open">👁</span>
+                        <span class="eye-closed">👁‍🗨</span>
+                    </button>
+                </div>
+
+                <div class="strength-container">
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strength-fill"></div>
+                    </div>
+                    <div class="strength-score">
+                        <span class="score-label">STRENGHT:</span>
+                        <span class="score-value" id="score-value">0</span>
+                        <span class="score-max">/100</span>
+                    </div>
                 </div>
             </section>
         </main>
