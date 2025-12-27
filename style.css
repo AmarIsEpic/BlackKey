@@ -42,3 +42,48 @@ body {
 .background-glow.strong {
     background: radial-gradient(ellipse at center, #00ff4115 0%, #0a0a0f 70%);
 }
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.logo {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.logo-icon {
+    font-size: 2rem;
+}
+
+.logo-text {
+    color: #e0e0e0;
+}
+
+.logo-tex .accent {
+    color: #00ff41;
+    text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff4180, 0 0 30px #00ff4140;
+}
+
+.tagline {
+    color: #888;
+    letter-spacing: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
