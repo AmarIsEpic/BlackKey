@@ -401,6 +401,37 @@ body {
     color: #0a0a0f;
 }
 
+.history-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.history-list::-webkit-scrollbar-track {
+    background: #0a0a0f;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+    background: #1a1a25;
+    border-radius: 3px;
+}
+
+@media (max-width: 600px) {
+    .generator-options {
+        justify-content: center;
+    }
+
+    .length-label {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .attack-indicator {
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+}
+
 .toggle-btn {
     position: absolute;
     right: 10px;
