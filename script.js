@@ -331,5 +331,58 @@ const BLACKKEY = (function() {
         if(num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
         return num.toString();
     }
-}
+};
+
+    const Terminal = {
+        clear() {
+            DOM.terminalBody.innerHTML = `
+            <div class="terminal-line">
+                <span class="prompt">root@blackkey:~$</span>
+                <span classs="command">./analyze_password.sh</span>
+            </div>
+            <div class="terminal-line>
+                <span class="output">[*] Initializing password analysis module...</span>
+            </div>`;
+        },
+        
+        addLine(text, type = 'output') {
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            line.innerHTML = `<span class="output ${type}">${text}</span>`;
+
+            const cursorLine = DOM.terminalBody.querySelector('.input-line');
+            if (cursorLine) cursorLine.remove();
+
+            DOM.terminalBody.appendChild(line);
+
+            const newCursorLine = document.createElement('div');
+            newCursorLine.className = 'terminal-line input-line';
+            newCursorLine.innerHTML = `
+                <span class="prompt">roo@blackkey:~$</span>
+                <span class="cursor">▊</span>`;
+            DOM.terminalBody.appendChild(newCursorLine);
+
+            DOM.terminalBody.scrollTop = DOM.terminalBody.scrollHeight;
+        },
+
+        displayStrengthMessages(strength) {
+            this.clear();
+
+            const messages = CONFIG.TERMINAL_MESSAGES[strength] || CONFIG.TERMINAL_MESSAGES.empty;
+
+            messages.forEach((msg, index) => {
+                setTimeout(() => {
+                    let type = 'output';
+                    if (msg.startWith('[+]')) type = 'success';
+                    else if (msg.startsWith('[!]')) type = 'warning';
+                    else if (msg.includes('FAILED') || msg.includes('CRITICAL')) type = 'error';
+                    else if (msg.includes('Risk level: HIGH') || msg.includes('Risk level: MEDIUM')) type = 'warning';
+                    else if (msg.includes('FORTRESS') || msg.includes('CENTURIES')) type = 'success';
+
+                    this.addLine(msg, type);
+                }, index * 150);
+            });
+        }
+    };
+    
 }) 
