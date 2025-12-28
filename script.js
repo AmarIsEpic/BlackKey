@@ -148,8 +148,53 @@ const BLACKKEY = (function() {
 
         calculateScore(password, checks) {
             if(password.length === 0) return 0;
-        }
 
+            const S = CONFIG.SCORING;
+            let score  = 0;
+
+            score += Math.min(password.length * S.LENGTH_MULTIPLIER, 40);
+
+            if (checks.uppercase) score += S.UPPERCASE_BONUS;
+            if (checks.lowercase) score += S.LOWERCASE_BONUS;
+            if (checks.number) score += S.NUMBER_BONUS;
+            if (checks.symbol) score += S.SYMBOL_BONUS;
+
+            if (checks.uppercase && checks.lowercase) {
+                score += S.MIXED_CASE_BONUS;
+            }
+
+            if (password.length >= 16) score += S.LONG_PASSWORD_BONUS;
+            if (password.length >= 20) score += S.VERY_LONG_BONUS;
+
+            if (this.hasRepeatingChars(password)) {
+                score += S.REPEAT_PENALTY;
+            }
+
+            if (this.hasSequentialChars(password)) {
+                score += S.SEQUENCE_PENALTY;
+            }
+
+            if (this.isCommonPassword(password)) {
+                socre += S.COMMON_PASSWORD_PENALTY;
+            }
+
+            return Math.max(0, Math.min(100, Math.round(score)));
+        },
+
+        hasRepeatingChars(password) {
+            return /(.)\1{2,}/.test(password);
+        },
+
+        hasSequentialChars(password) {
+            const sequences = [
+                'abcdefghijklmnopqrstuvwxyz',
+                'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                '0123456789',
+                'qwertyuiop',
+                'asdfghjkl',
+                'zxcvbnm'
+            ];
+        }
         
     }
     
