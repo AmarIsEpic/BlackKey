@@ -492,4 +492,53 @@ const BLACKKEY = (function() {
             DOM.toggleBtn.classList.toggle('visible', isPassword);
         }
     };
-}) 
+
+    function handlePasswordInput(e) {
+        const password = e.target.value;
+        state.password = password;
+
+        const results = PasswordAnalyzer.analyze(password);
+        state.score = results.score;
+        state.strength = results.strength;
+        state.checks = results.checks;
+
+        UI.update(results);
+        Terminal.displayStrengthMessages(results.strength);
+        BruteForceSimulator.start(password);
+    }
+
+    function handleToggleVisibility() {
+        UI.togglePasswordVisibility();
+    }
+
+    function bindEvents() {
+        DOM.passwordInput.addEventListener('input', handlePasswordInput);
+        DOM.toggleBtn.addEventListener('click', handleToggleVisibility);
+    }
+
+    function init() {
+        cacheDOMReferences();
+        bindEvents();
+        Terminal.clear();
+
+        const cursorLine = document.createElement('div');
+        cursorLine.className = 'terminal-line input-line';
+        cursorLine.innerHTML = `
+        <span class="prompt">root@blackkey:~$</span>
+        <span class="cursor">▊</span>`;
+        DOM.terminalBody.appendChild(cursorLine);
+
+        console.log('BLACKKEY initialized successfully');
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    return {
+        analyze: (password) => PasswordAnalyzer.analyze(password),
+        getState: () => ({...state})
+    };
+})();
