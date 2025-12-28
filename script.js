@@ -236,6 +236,33 @@ const BLACKKEY = (function() {
             const seconds = avgAttemts / CONFIG.SIMULATION.BASE_ATTEMPTS_PER_SEC;
 
             return this.formatTime(seconds);
+        },
+
+        formatTime(seconds) {
+            if (seconds<0.001) return 'INSTANT';
+            if (seconds<1) return `${Math.round(seconds * 1000)} miliseconds`;
+            if (seconds<60) return `${Math.round(seconds)} seconds`;
+
+            const minutes = seconds / 60;
+            if(minutes < 60) return `${Math.round(minues)} minutes`;
+
+            const hours = minutes / 60;
+            if(hours < 24) return `${Math.round(hours)} hours`;
+
+            const days = hours / 24;
+            if (days<30) return `${Math.round(days)} days`;
+
+            const months = days / 30;
+            if (months < 12) return `${Math.round(months)} months`;
+
+            const years = days / 365;
+            if (years < 100) return `${Math.round(years)} years`;
+            if (years < 1000) return `${Math.round(years)} years`;
+            if (years < 1000000) return `${Math.round(years / 1000)}K years`;
+            if (years < 1000000000) return `${Math.round(years / 1000000)}M years`;
+            if (years < 1000000000000) return `${Math.round(years / 1000000000)}B years`;
+
+            return 'CENTURIES+';
         }
     }
     
