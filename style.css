@@ -76,14 +76,14 @@ body {
     color: #e0e0e0;
 }
 
-.logo-tex .accent {
+.logo-text .accent {
     color: #00ff41;
     text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff4180, 0 0 30px #00ff4140;
 }
 
 .tagline {
     color: #888;
-    letter-spacing: 0.9rem;
+    font-size: 0.9rem;
     letter-spacing: 2px;
     text-transform: uppercase;
 }
@@ -117,7 +117,7 @@ body {
 .password-input {
     width: 100%;
     padding: 15px 50px 15px 15px;
-    font-family: 'Courier New', 'Consolas', 'Monacno' monospace;
+    font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
     font-size: 1.2rem;
     background: #0a0a0f;
     border: 2px solid #1a1a25;
@@ -138,7 +138,7 @@ body {
 
 .password-input.weak {
     border-color: #ff0040;
-    box-shadow: 0 0 10px #00ff41, 0 0 20px #00ff4180, 0 0 30px #00ff4140;
+    box-shadow: 0 0 10px #ff0040, 0 0 20px #ff004080, 0 0 30px #ff004040;
 }
 
 .password-input.medium {
@@ -399,7 +399,7 @@ body {
     50% { opacity: 0; }
 }
 
-.terminal.body::-webkit-scrollbar {
+.terminal-body::-webkit-scrollbar {
     width: 8px;
 }
 
