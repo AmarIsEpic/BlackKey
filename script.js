@@ -268,7 +268,7 @@ const BLACKKEY = (function() {
             if(/[a-z]/.test(password)) charSetSize += 26;
             if(/[A-Z]/.test(password)) charSetSize += 26;
             if(/[0-9]/.test(password)) charSetSize += 10;
-            if(/[^a-zA-Z0-9]/.test(password)) charSetSize = 32;
+            if(/[^a-zA-Z0-9]/.test(password)) charSetSize += 32;
 
             if(charSetSize === 0) charSetSize = 26;
 
