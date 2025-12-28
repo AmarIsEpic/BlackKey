@@ -354,7 +354,7 @@ const BLACKKEY = (function() {
 
             return { type: 'NOT VIABLE', class: 'bruteforce'};
         },
-        
+
         estimateCrackTime(password) {
             if (password.length === 0) return '—';
 
@@ -587,9 +587,15 @@ const BLACKKEY = (function() {
             this.updateStrengthBar(results.score, results.strength);
             this.updateScore(results.score, results.strength);
             this.updateCrackTime(results.crackTime);
+            this.updateAttackType(results.attackType);
             this.updateCheckList(results.checks);
             this.updateBackgroundGlow(results.strength);
             this.applyEffects(results.strength);
+        },
+
+        updateAttackType(attackType) {
+            DOM.attackType.textContent = attackType.type;
+            DOM.attackType.className = 'attack-value ' + attackType.class;
         },
 
         updateStrengthBar(score, strength) {
@@ -706,8 +712,11 @@ const BLACKKEY = (function() {
         state.checks = results.checks;
 
         UI.update(results);
+
         Terminal.displayStrengthMessages(results.strength);
         BruteForceSimulator.start(password);
+
+        PasswordHistory.add(password, results.score, results.strength);
     }
 
     function handleToggleVisibility() {
@@ -718,6 +727,40 @@ const BLACKKEY = (function() {
         DOM.passwordInput.addEventListener('input', handlePasswordInput);
         DOM.toggleBtn.addEventListener('click', handleToggleVisibility);
 
+        DOM.copyBtn.addEventListener('click', () => {
+            const password = DOM.passwordInput.value;
+            if(password) {
+                navigator.clipboard.writeText(password).then(() => {
+                    DOM.copyBtn.classList.add('copied');
+                    setTimeout(() => {
+                        DOM.copyBtn.classList.remove('copied');
+                    }, 1500);
+                });
+            }
+        });
+
+        DOM.generateBtn.addEventListener('click', () => {
+            const password = PasswordGenerator.generate(
+                PasswordGenerator.getLength(),
+                PasswordGenerator.getOptions()
+            );
+            DOM.passwordInput.value = password;
+            DOM.passwordInput.dispatchEvent(new Event ('input'));
+        });
+
+        DOM.clearHistoryBtn.addEventListener('click', () => {
+            PasswordHistory.clear();
+        });
+
+        DOM.historyList.addEventListener('click', (e) => {
+            const item = e.target.closest('.history-item');
+            if (item) {
+                const password = item.dataset.password;
+                DOM.passwordInput.value = password;
+                DOM.passwordInput.dispatchEvent(new Event('input'));
+            }
+        });
+        
         document.getElementById('speed-select').addEventListener('change', () => {
             if (state.password.length > 0) {
                 BruteForceSimulator.start(state.password);
