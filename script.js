@@ -127,6 +127,38 @@ const BLACKKEY = (function() {
         DOM.checkSymbol = document.getElementById('check-symbol');
     }
 
+    const PasswordGenerator = {
+        generate(length, options) {
+            let chars = '';
+            if (options.uppercase) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (options.lowercase) chars += 'abcdefghijklmnopqrstuvwxyz';
+            if (options.numbers) chars += '0123456789';
+            if (options.symbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+        
+            if (chars === '') chars = 'abcdefghijklmnopqrstuvwxyz';
+
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        },
+        
+        getOptions() {
+            return {
+                uppercase: document.getElementById('gen-uppercase').checked,
+                lowercase: document.getElementById('gen-lowercase').checked,
+                numbers: document.getElementById('gen-numbers').checked,
+                symbols: document.getElementById('gen-symbols').checked
+            };
+        },
+
+        getLength() {
+            const length = parseInt(document.getElementById('gen-length').value, 10);
+            return Math.min(32, Math.max(8, length));
+        }
+        
+    }
     const PasswordAnalyzer = {
         analyze(password) {
             const checks = this.runChecks(password);
