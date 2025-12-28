@@ -238,3 +238,71 @@ body {
     color: #555;
 }
 
+.crack-time-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: #0a0a0f;
+    border-radius: 4px;
+    border-left: 3px solid #00ffff;
+}
+
+.crack-label {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.crack-value {
+    color: #00ffff;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.checklist-section {
+    background: #12121a;
+    border: 1px solid #1a1a25;
+    border-radius: 4px;
+    padding: 25px;
+}
+
+.checklist {
+    list-style: none;
+    display: grid;
+    gap: 10px;
+}
+
+.check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #0a0a0f;
+    border-radius: 4px;
+    border-left: 3px solid #ff0040;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.check-item.passed {
+    border-left-color: #00ff41;
+}
+
+.check-icon {
+    font-size: 1rem;
+    color: #ff0040;
+    transition: color 0.15s ease;
+}
+
+.check-item.passed .check-icon {
+    color: #00ff41;
+}
+
+.check-text {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.check-item.passed .check-text {
+    color: #e0e0e0;
+}
+
