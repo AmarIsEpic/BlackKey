@@ -33,6 +33,55 @@ const BLACKKEY = (function() {
                 numbers: 10,
                 symbols: 32
             }
+        },
+
+        TERMINAL_MESSAGES: {
+            empty: [
+                '[*] Waiting for target input...',
+                '[*] No password detected.',
+            ],
+            veryWeak: [
+                '[!] CRITICAL: Password is extremely weak!',
+                '[!] Estimated crack time: INSTANT',
+                '[*] Initiating dictionary attack...',
+                '[+] PASSWORD FOUND IN COMMON LIST!',
+                '[!] This password offers NO protection',
+                '[*] Recommendation: Generate new password immidietly.'
+            ],
+            weak: [
+                '[!] WARNING: Password is weak.',
+                '[*] Running pattern analysis...',
+                '[+] Detected: Lowentrpy password',
+                '[*] Brute-force attack viable.',
+                '[!] Risk level: HIGH',
+                '[*] Recommendation: Add more character vaariety.'
+            ],
+            medium: [
+                '[*] Analyzing password entropy...',
+                '[+] Moderate complexity detected.',
+                '[*] Dictionary attacked: FAILED',
+                '[*] Initiating hybrid attack...',
+                '[!] Risk level: MEDIUM',
+                '[*] Recommendation: Increase length to 16+ chars.'
+            ],
+            strong: [
+                '[*] Running deep analyis...',
+                '[+] High entropy detected.',
+                '[*] Dictionary attack: FAILED',
+                '[*] Hybrid attack: FAILED',
+                '[*] Brute-force: NOT VIABLE',
+                '[+] Risk level: LOW',
+                '[*] Password meets security standards.'
+            ],
+            veryStrong: [
+                '[*] Executing full attack suite...',
+                '[+] Maximum entropy detected!',
+                '[*] All attack vectors: FAILED',
+                '[+] Estimated crack time: CENTURIES',
+                '[+] Risk level: MINIMAL',
+                '[*] STATUS: FORTRESS-LEVEL SECURITY',
+                '[*] Even quantum computers would struggle.',
+            ]
         }
     }
 })
