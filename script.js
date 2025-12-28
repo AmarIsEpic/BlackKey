@@ -220,6 +220,23 @@ const BLACKKEY = (function() {
             return 'veryStrong';
         },
         
+        estimatedCrackTime(password){
+            if(password.length === 0) return '-';
+
+            let charSetSize = 0;
+            if(/[a-z]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.lowercase;
+            if(/[A-Z]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.uppercase;
+            if(/[0-9]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.number;
+            if(/[^a-zA-Z0-9]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.symbols;
+
+            if(charSetSize === 0) charSetSize = 26;
+
+            const combinations = Math.pow(charSetSize, password.length);
+            const avgAttemts = combinations / 2;
+            const seconds = avgAttemts / CONFIG.SIMULATION.BASE_ATTEMPTS_PER_SEC;
+
+            return this.formatTime(seconds);
+        }
     }
     
 })
