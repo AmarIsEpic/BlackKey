@@ -131,6 +131,7 @@ const BLACKKEY = (function() {
         DOM.attackType = document.getElementById('attack-type');
         DOM.historyList = document.getElementById('history-list');
         DOM.clearHistoryBtn = document.getElementById('clear-history-btn');
+        DOM.entropyValue = document.getElementById('entropy-value');
     }
 
     const PasswordGenerator = {
@@ -245,8 +246,9 @@ const BLACKKEY = (function() {
             const strength = this.getStrengthLevel(score);
             const crackTime = this.estimateCrackTime(password);
             const attackType = this.getAttackType(password, strength);
+            const entropy = this.calculateEntropy(password);
 
-            return { checks, score, strength, crackTime, attackType };
+            return { checks, score, strength, crackTime, attackType, entropy };
         },
 
         runChecks(password) {
@@ -257,6 +259,20 @@ const BLACKKEY = (function() {
                 number: /[0-9]/.test(password),
                 symbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(password)
             };
+        },
+
+        calculateEntropy(password) {
+            if(password.length === 0) return 0;
+
+            let charSetSize = 0;
+            if(/[a-z]/.test(password)) charSetSize += 26;
+            if(/[A-Z]/.test(password)) charSetSize += 26;
+            if(/[0-9]/.test(password)) charSetSize += 10;
+            if(/[^a-zA-Z0-9]/.test(password)) charSetSize = 32;
+
+            if(charSetSize === 0) charSetSize = 26;
+
+            return (Math.log2(charSetSize) * password.length).toFixed(1);
         },
 
         calculateScore(password, checks) {
@@ -591,6 +607,11 @@ const BLACKKEY = (function() {
             this.updateCheckList(results.checks);
             this.updateBackgroundGlow(results.strength);
             this.applyEffects(results.strength);
+            this.updateEntropy(results.entropy);
+        },
+
+        updateEntropy(entropy) {
+            DOM.entropyValue.textContent = entropy > 0 ? `${entropy} bits` : `0 bits`;
         },
 
         updateAttackType(attackType) {
@@ -760,7 +781,18 @@ const BLACKKEY = (function() {
                 DOM.passwordInput.dispatchEvent(new Event('input'));
             }
         });
-        
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'g') {
+                e.preventDefault();
+                DOM.generateBtn.click();
+            }
+            if (e.ctrlKey && e.key === 'h') {
+                e.preventDefault();
+                PasswordHistory.clear();
+            }
+        });
+
         document.getElementById('speed-select').addEventListener('change', () => {
             if (state.password.length > 0) {
                 BruteForceSimulator.start(state.password);
@@ -772,6 +804,7 @@ const BLACKKEY = (function() {
         cacheDOMReferences();
         bindEvents();
         Terminal.clear();
+        PasswordHistory.render();
 
         const cursorLine = document.createElement('div');
         cursorLine.className = 'terminal-line input-line';
