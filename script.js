@@ -125,5 +125,32 @@ const BLACKKEY = (function() {
         DOM.checkNumber = document.getElementById('check-number');
         DOM.checkSymbol = document.getElementById('check-symbol');
     }
+
+    const PasswordAnalyzer = {
+        analyze(password) {
+            const checks = this.runChecks(password);
+            const score = this.calculateScore(password, checks);
+            const strength = this.getStrengthLevel(score);
+            const crackTime = this.estimatedCrackTime(password);
+
+            return { checks, score, strength, crackTime };
+        },
+
+        runChecks(password) {
+            return {
+                length: password.length >= 12,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                symbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/
+            };
+        },
+
+        calculateScore(password, checks) {
+            if(password.length === 0) return 0;
+        }
+
+        
+    }
     
 })
