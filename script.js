@@ -298,5 +298,38 @@ const BLACKKEY = (function() {
             );
         }, CONFIG.SIMULATION.UPDATE_INTERVAL);
     },
+
+    stop() {
+        if(state.simulation.intervalId) {
+            clearInterval(state.simulation.intervalId);
+            state.simulation.intervalId = null;
+        }
+        state.simulation.running = false;
+        DOM.simStatus.classList.remove('cracking');
+    },
+
+    generateFakeAttempt(length) {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    },
+
+    updateDisplay(attempt, totalAttempts, status) {
+        DOM.attemptDisplay.querySelector('.attempt-text').textContent = attempt || '-';
+        DOM.attemptsPerSec.textContent = this.formatNumber(CONFIG.SIMULATION.BASE_ATTEMPTS_PER_SEC);
+        DOM.totalAttempts.textContent = this.formatNumber(totalAttempts);
+        DOM.simStatus.textContent = status;
+    },
+
+    formatNumber(num) {
+        if(num >= 1e12) return (num / 1e12).toFixed(1) + 'T';
+        if(num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+        if(num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+        if(num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+        return num.toString();
+    }
 }
 }) 
