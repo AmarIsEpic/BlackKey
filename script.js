@@ -21,7 +21,8 @@ const BLACKKEY = (function() {
             LONG_PASSWORD_BONUS: 10,
             REPEAT_PENALTY: -10,
             SEQUENCE_PENALTY: -15,
-            COMMON_PASSWORD_PENALTY: -50
+            COMMON_PASSWORD_PENALTY: -50,
+            VERY_LONG_BONUS: 10,
         },
 
         SIMULATION: {
@@ -46,26 +47,26 @@ const BLACKKEY = (function() {
                 '[*] Initiating dictionary attack...',
                 '[+] PASSWORD FOUND IN COMMON LIST!',
                 '[!] This password offers NO protection',
-                '[*] Recommendation: Generate new password immidietly.'
+                '[*] Recommendation: Generate new password immediately.'
             ],
             weak: [
                 '[!] WARNING: Password is weak.',
                 '[*] Running pattern analysis...',
-                '[+] Detected: Lowentrpy password',
+                '[+] Detected: Low entropy password',
                 '[*] Brute-force attack viable.',
                 '[!] Risk level: HIGH',
-                '[*] Recommendation: Add more character vaariety.'
+                '[*] Recommendation: Add more character variety.'
             ],
             medium: [
                 '[*] Analyzing password entropy...',
                 '[+] Moderate complexity detected.',
-                '[*] Dictionary attacked: FAILED',
+                '[*] Dictionary attack: FAILED',
                 '[*] Initiating hybrid attack...',
                 '[!] Risk level: MEDIUM',
                 '[*] Recommendation: Increase length to 16+ chars.'
             ],
             strong: [
-                '[*] Running deep analyis...',
+                '[*] Running deep analysis...',
                 '[+] High entropy detected.',
                 '[*] Dictionary attack: FAILED',
                 '[*] Hybrid attack: FAILED',
@@ -112,11 +113,11 @@ const BLACKKEY = (function() {
         DOM.scoreValue = document.getElementById('score-value');
         DOM.crackTime = document.getElementById('crack-time');
         DOM.terminalBody = document.getElementById('terminal-body');
-        DOM.attemptsPerSec = document.getElementById('attempts-per-secc');
+        DOM.attemptsPerSec = document.getElementById('attempts-per-sec');
         DOM.totalAttempts= document.getElementById('total-attempts');
         DOM.simStatus = document.getElementById('sim-status');
         DOM.attemptDisplay = document.getElementById('attempt-display');
-        DOM.backgroundGlow = document.getElementById('.background-glow');
+        DOM.backgroundGlow = document.querySelector('.background-glow');
         DOM.container = document.querySelector('.container');
 
         DOM.checkLength = document.getElementById('check-length');
@@ -131,7 +132,7 @@ const BLACKKEY = (function() {
             const checks = this.runChecks(password);
             const score = this.calculateScore(password, checks);
             const strength = this.getStrengthLevel(score);
-            const crackTime = this.estimatedCrackTime(password);
+            const crackTime = this.estimateCrackTime(password);
 
             return { checks, score, strength, crackTime };
         },
@@ -142,7 +143,7 @@ const BLACKKEY = (function() {
                 uppercase: /[A-Z]/.test(password),
                 lowercase: /[a-z]/.test(password),
                 number: /[0-9]/.test(password),
-                symbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/
+                symbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(password)
             };
         },
 
@@ -175,7 +176,7 @@ const BLACKKEY = (function() {
             }
 
             if (this.isCommonPassword(password)) {
-                socre += S.COMMON_PASSWORD_PENALTY;
+                score += S.COMMON_PASSWORD_PENALTY;
             }
 
             return Math.max(0, Math.min(100, Math.round(score)));
@@ -220,31 +221,31 @@ const BLACKKEY = (function() {
             return 'veryStrong';
         },
         
-        estimatedCrackTime(password){
+        estimateCrackTime(password){
             if(password.length === 0) return '-';
 
             let charSetSize = 0;
             if(/[a-z]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.lowercase;
             if(/[A-Z]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.uppercase;
-            if(/[0-9]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.number;
+            if(/[0-9]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.numbers;
             if(/[^a-zA-Z0-9]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.symbols;
 
             if(charSetSize === 0) charSetSize = 26;
 
             const combinations = Math.pow(charSetSize, password.length);
-            const avgAttemts = combinations / 2;
-            const seconds = avgAttemts / CONFIG.SIMULATION.BASE_ATTEMPTS_PER_SEC;
+            const avgAttempts = combinations / 2;
+            const seconds = avgAttempts / CONFIG.SIMULATION.BASE_ATTEMPTS_PER_SEC;
 
             return this.formatTime(seconds);
         },
 
         formatTime(seconds) {
             if (seconds<0.001) return 'INSTANT';
-            if (seconds<1) return `${Math.round(seconds * 1000)} miliseconds`;
+            if (seconds<1) return `${Math.round(seconds * 1000)} milliseconds`;
             if (seconds<60) return `${Math.round(seconds)} seconds`;
 
             const minutes = seconds / 60;
-            if(minutes < 60) return `${Math.round(minues)} minutes`;
+            if(minutes < 60) return `${Math.round(minutes)} minutes`;
 
             const hours = minutes / 60;
             if(hours < 24) return `${Math.round(hours)} hours`;
@@ -271,7 +272,7 @@ const BLACKKEY = (function() {
         this.stop();
 
         if(password.length === 0) {
-            this.updateDisplay('-', 0, 'IDLE');;
+            this.updateDisplay('-', 0, 'IDLE');
             return;
         }
 
@@ -338,9 +339,9 @@ const BLACKKEY = (function() {
             DOM.terminalBody.innerHTML = `
             <div class="terminal-line">
                 <span class="prompt">root@blackkey:~$</span>
-                <span classs="command">./analyze_password.sh</span>
+                <span class="command">./analyze_password.sh</span>
             </div>
-            <div class="terminal-line>
+            <div class="terminal-line">
                 <span class="output">[*] Initializing password analysis module...</span>
             </div>`;
         },
@@ -358,7 +359,7 @@ const BLACKKEY = (function() {
             const newCursorLine = document.createElement('div');
             newCursorLine.className = 'terminal-line input-line';
             newCursorLine.innerHTML = `
-                <span class="prompt">roo@blackkey:~$</span>
+                <span class="prompt">root@blackkey:~$</span>
                 <span class="cursor">▊</span>`;
             DOM.terminalBody.appendChild(newCursorLine);
 
@@ -373,7 +374,7 @@ const BLACKKEY = (function() {
             messages.forEach((msg, index) => {
                 setTimeout(() => {
                     let type = 'output';
-                    if (msg.startWith('[+]')) type = 'success';
+                    if (msg.startsWith('[+]')) type = 'success';
                     else if (msg.startsWith('[!]')) type = 'warning';
                     else if (msg.includes('FAILED') || msg.includes('CRITICAL')) type = 'error';
                     else if (msg.includes('Risk level: HIGH') || msg.includes('Risk level: MEDIUM')) type = 'warning';
