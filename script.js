@@ -221,20 +221,23 @@ const BLACKKEY = (function() {
             return 'veryStrong';
         },
         
-        estimateCrackTime(password){
-            if(password.length === 0) return '-';
+        estimateCrackTime(password) {
+            if (password.length === 0) return '—';
 
             let charSetSize = 0;
-            if(/[a-z]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.lowercase;
-            if(/[A-Z]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.uppercase;
-            if(/[0-9]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.numbers;
-            if(/[^a-zA-Z0-9]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.symbols;
+            if (/[a-z]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.lowercase;
+            if (/[A-Z]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.uppercase;
+            if (/[0-9]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.numbers;
+            if (/[^a-zA-Z0-9]/.test(password)) charSetSize += CONFIG.SIMULATION.CHAR_SETS.symbols;
 
-            if(charSetSize === 0) charSetSize = 26;
+            if (charSetSize === 0) charSetSize = 26;
 
             const combinations = Math.pow(charSetSize, password.length);
             const avgAttempts = combinations / 2;
-            const seconds = avgAttempts / CONFIG.SIMULATION.BASE_ATTEMPTS_PER_SEC;
+    
+            const speedSelect = document.getElementById('speed-select');
+            const speed = speedSelect ? parseInt(speedSelect.value, 10) : CONFIG.SIMULATION.BASE_ATTEMPTS_PER_SEC;
+            const seconds = avgAttempts / speed;
 
             return this.formatTime(seconds);
         },
@@ -289,7 +292,7 @@ const BLACKKEY = (function() {
         if (charSetSize === 0) charSetSize = 26;
         
         const totalCombinations = Math.pow(charSetSize, password.length);
-        state.simulation.targetAttmpts = Math.floor(totalCombinations / 2);
+        state.simulation.targetAttempts = Math.floor(totalCombinations / 2);
         state.simulation.password = password;
 
         const speed = this.getSpeed();
@@ -375,7 +378,7 @@ const BLACKKEY = (function() {
             result += chars.charAt(Math.floor(Math.random()* chars.length));
         }
         return result;
-    }
+    },
 
     updateDisplay(attempt, totalAttempts, status) {
         DOM.attemptDisplay.querySelector('.attempt-text').textContent = attempt || '-';
@@ -580,6 +583,12 @@ const BLACKKEY = (function() {
     function bindEvents() {
         DOM.passwordInput.addEventListener('input', handlePasswordInput);
         DOM.toggleBtn.addEventListener('click', handleToggleVisibility);
+
+        document.getElementById('speed-select').addEventListener('change', () => {
+            if (state.password.length > 0) {
+                BruteForceSimulator.start(state.password);
+            }
+        });
     }
 
     function init() {
