@@ -466,6 +466,30 @@ const BLACKKEY = (function() {
             } else if (strength === 'medium') {
                 DOM.passwordInput.classList.add('medium');
             }
+        },
+
+        triggerShake() {
+            DOM.container.classList.remove('shake');
+            void DOM.container.offsetWidth;
+            DOM.container.classList.add('shake');
+
+            setTimeout(() => {
+                DOM.container.classList.remove('shake');
+            }, 500);
+        },
+
+        triggerGlitch() {
+            DOM.passwordInput.classList.add('glitch');
+
+            setTimeout(() => {
+                DOM.passwordInput.classList.remove('glitch');
+            }, 300);
+        },
+
+        togglePasswordVisibility() {
+            const isPassword = DOM.passwordInput.type === 'password';
+            DOM.passwordInput.type = isPassword ? 'text' : 'password';
+            DOM.toggleBtn.classList.toggle('visible', isPassword);
         }
-    }
+    };
 }) 
