@@ -104,6 +104,17 @@
 
             <section class="simulation-section">
                 <h2 class="section-title">// BRUTE-FORCE SIMULATION</h2>
+
+                <div class="speed-selector">
+                    <span class="speed-label">ATTACK SPEED:</span>
+                    <select id="speed-select" class="speed-select">
+                        <option value="1000">1K/sec (Old PC)</option>
+                        <option value="1000000">1M/sec (Modern CPU)</option>
+                        <option value="1000000000" selected>1B/sec (GPU Cluster)</option>
+                        <option value="1000000000000">1T/sec (Supercomputer)</option>
+                    </select>
+                </div>
+
                 <div class="simulation-stats">
                     <div class="stat-item">
                         <span class="stat-label">ATTEMPTS/SEC:</span>
@@ -118,6 +129,12 @@
                         <span class="stat-value" id="sim-status">IDLE</span>
                     </div>
                 </div>
+
+                <div class="cracked-display" id="cracked-display">
+                    <span class="cracked-label">CRACKED IN:</span>
+                    <span class="cracked-value" id="cracked-time">-</span>
+                </div>
+
                 <div class="attempt-display" id="attempt-display">
                     <span class="attempt-text">-</span>
                 </div>
