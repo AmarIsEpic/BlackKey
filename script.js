@@ -400,6 +400,10 @@ const BLACKKEY = (function() {
             DOM.strengthFill.style.width = `${score}%`;
             DOM.strengthFill.className = 'strength-fill';
 
+            if (score === 0 || strength === 'empty') {
+                DOM.strengthFill.classList.add('weak');
+                return;
+            }
             if (strength === 'veryWeak' || strength === 'weak') {
                 DOM.strengthFill.classList.add('weak');
             } else if (strength === 'medium') {
@@ -413,12 +417,12 @@ const BLACKKEY = (function() {
             DOM.scoreValue.textContent = score;
             DOM.scoreValue.className = 'score-value';
 
-            if (strength === 'veryWeak' || strength === 'weak') {
+             if (score === 0 || strength === 'empty' || strength === 'veryWeak' || strength === 'weak') {
                 DOM.scoreValue.classList.add('weak');
             } else if (strength === 'medium') {
                 DOM.scoreValue.classList.add('medium');
             }
-        },
+},
 
         updateCrackTime(crackTime) {
             DOM.crackTime.textContent = crackTime;
@@ -466,6 +470,8 @@ const BLACKKEY = (function() {
                 DOM.passwordInput.classList.add('weak');
             } else if (strength === 'medium') {
                 DOM.passwordInput.classList.add('medium');
+            } else if (strength === 'strong' || strength === 'veryStrong') {
+                DOM.passwordInput.classList.add('strong');
             }
         },
 

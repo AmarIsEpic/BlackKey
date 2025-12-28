@@ -132,18 +132,26 @@ body {
 }
 
 .password-input:focus {
-    border-color: #00ff41;
-    box-shadow: 0 0 10px #00ff41, 0 0 20px #00ff4180, 0 0 30px #00ff4140;
+    border-color: #3a3a45;
+    box-shadow: 0 0 10px #3a3a4540;
 }
 
-.password-input.weak {
+.password-input.weak,
+.password-input.weak:focus {
     border-color: #ff0040;
     box-shadow: 0 0 10px #ff0040, 0 0 20px #ff004080, 0 0 30px #ff004040;
 }
 
-.password-input.medium {
+.password-input.medium,
+.password-input.medium:focus {
     border-color: #ffcc00;
     box-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc0080;
+}
+
+.password-input.strong,
+.password-input.strong:focus {
+    border-color: #00ff41;
+    box-shadow: 0 0 10px #00ff41, 0 0 20px #00ff4180, 0 0 30px #00ff4140;
 }
 
 .toggle-btn {
@@ -190,7 +198,7 @@ body {
     background: #ff0040;
     border-radius: 4px;
     transition: width 0.3s ease, background 0.3s ease;
-    box-shadow: 0 0 10px currentColor;
+    box-shadow: 0 0 10px #ff0040;
 }
 
 .strength-fill.weak {
