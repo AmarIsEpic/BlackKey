@@ -83,5 +83,47 @@ const BLACKKEY = (function() {
                 '[*] Even quantum computers would struggle.',
             ]
         }
+    };
+    
+    const state = {
+        password: '',
+        score: 0,
+        strength: 'empty',
+        checks: {
+            length: false,
+            uppercase: false,
+            lowercase: false,
+            number: false,
+            symbol: false
+        },
+        simulation: {
+            running: false,
+            attempts: 0,
+            intervalId: null
+        }
+    };
+
+    const DOM = {};
+
+    function cacheDOMReferences() {
+        DOM.passwordInput = document.getElementById('password-input');
+        DOM.toggleBtn = document.getElementById('toggle-visibility');
+        DOM.strengthFll = document.getElementById('strength-fill');
+        DOM.scoreValue = document.getElementById('score-value');
+        DOM.crackTime = document.getElementById('crack-time');
+        DOM.terminalBody = document.getElementById('terminal-body');
+        DOM.attemptsPerSec = document.getElementById('attempts-per-secc');
+        DOM.totalAttempts= document.getElementById('total-attempts');
+        DOM.simStatus = document.getElementById('sim-status');
+        DOM.attemptDisplay = document.getElementById('attempt-display');
+        DOM.backgroundGlow = document.getElementById('.background-glow');
+        DOM.container = document.querySelector('.container');
+
+        DOM.checkLength = document.getElementById('check-length');
+        DOM.checkUppercase = document.getElementById('check-uppercase');
+        DOM.checkLowercase = document.getElementById('check-lowercase');
+        DOM.checkNumber = document.getElementById('check-number');
+        DOM.checkSymbol = document.getElementById('check-symbol');
     }
+    
 })
