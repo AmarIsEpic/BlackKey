@@ -273,25 +273,43 @@ const BLACKKEY = (function() {
 
         if(password.length === 0) {
             this.updateDisplay('-', 0, 'IDLE');
+            this.hideCracked();
             return;
         }
 
         state.simulation.running = true;
         state.simulation.attempts = 0;
+        state.simulation.startTime = Date.now();
 
-        const attemptsPerUpdate = Math.floor(
-            CONFIG.SIMULATION.BASE_ATTEMPTS_PER_SEC *
-            (CONFIG.SIMULATION.UPDATE_INTERVAL / 1000)
-        );
+        let charSetSize = 0;
+        if (/[a-z]/.test(password)) charSetSize += 26;
+        if (/[A-Z]/.test(password)) charSetSize += 26;
+        if (/[0-9]/.test(password)) charSetSize += 10;
+        if (/[^a-zA-Z0-9]/.test(password)) charSetSize += 32;
+        if (charSetSize === 0) charSetSize = 26;
+        
+        const totalCombinations = Math.pow(charSetSize, password.length);
+        state.simulation.targetAttmpts = Math.floor(totalCombinations / 2);
+        state.simulation.password = password;
+
+        const speed = this.getSpeed();
+
+        const attemptsPerUpdate = Math.floor(speed * (CONFIG.SIMULATION.UPDATE_INTERVAL / 1000));
 
         this.updateDisplay('', 0, 'CRACKING...');
-        DOM.simStatus.classList.add('cracking');
+        this.hideCracked();
+        DOM.simStatus.classList.add('running');
+        DOM.simStatus.classList.remove('cracking');
 
         state.simulation.intervalId = setInterval(() => {
             state.simulation.attempts += attemptsPerUpdate;
 
+            if (state.simulation.attempts >= state.simulation.targetAttempts) {
+                this.cracked();
+                return;
+            }
+            
             const fakeAttempt = this.generateFakeAttempt(password.length);
-
             this.updateDisplay(
                 fakeAttempt,
                 state.simulation.attempts,
@@ -306,30 +324,71 @@ const BLACKKEY = (function() {
             state.simulation.intervalId = null;
         }
         state.simulation.running = false;
-        DOM.simStatus.classList.remove('cracking');
+        DOM.simStatus.classList.remove('running');
+    },
+
+    cracked() {
+        this.stop();
+        const elapsed = Date.now() - state.simulation.startTime;
+
+        this.updateDisplay(
+            state.simulation.password,
+            state.simulation.targetAttempts,
+            'CRACKED!'
+        );
+
+        DOM.simStatus.classList.add('cracked');
+        this.showCracked(elapsed);
+    },
+
+    showCracked(elapsedMs) {
+        const display = document.getElementById('cracked-display');
+        const timeValue = document.getElementById('cracked-time');
+
+        let timeStr;
+        if (elapsedMs < 1000) {
+            timeStr = `${elapsedMs}ms`;
+        } else if (elapsedMs < 600000) {
+            timeStr = `${(elapsedMs / 1000).toFixed(2)}s`;
+        } else {
+            timeStr = `${(elapsedMs / 60000).toFixed(2)}min`;
+        }
+
+        timeValue.textContent = timeStr;
+        display.classList.add('visible');
+        display.classList.remove('success');
+    },
+
+    hideCracked() {
+        const display = document.getElementById('cracked-display');
+        display.classList.remove('visible', 'success');
+    },
+
+    getSpeed() {
+        return parseInt(document.getElementById('speed-select').value, 10);
     },
 
     generateFakeAttempt(length) {
         const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
         let result = '';
-        for (let i = 0; i < length; i++) {
-            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        for (let i = 0; i<length; i++) {
+            result += chars.charAt(Math.floor(Math.random()* chars.length));
         }
         return result;
-    },
+    }
 
     updateDisplay(attempt, totalAttempts, status) {
         DOM.attemptDisplay.querySelector('.attempt-text').textContent = attempt || '-';
-        DOM.attemptsPerSec.textContent = this.formatNumber(CONFIG.SIMULATION.BASE_ATTEMPTS_PER_SEC);
+        DOM.attemptsPerSec.textContent = this.formatNumber(this.getSpeed());
         DOM.totalAttempts.textContent = this.formatNumber(totalAttempts);
         DOM.simStatus.textContent = status;
     },
 
     formatNumber(num) {
-        if(num >= 1e12) return (num / 1e12).toFixed(1) + 'T';
-        if(num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
-        if(num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
-        if(num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+        if (num >= 1e12) return (num / 1e12).toFixed(1) + 'T';
+        if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+        if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+        if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
         return num.toString();
     }
 };
