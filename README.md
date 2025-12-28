@@ -6,6 +6,7 @@ The project uses a simple, framework-free setup with all files located in the ma
 
 The project is deployed using GitHub Pages. Since all files are in the main branch root, no build steps or configuration are required. To deploy, push the repository to GitHub, go to **Settings → Pages**, select the `main` branch and the `/root` folder, then save. The live version will be available at `https://amarisepic.github.io/BlackKey/`.
 
-To run the project locally, simply download or clone the repository and open `index.html` in any modern web browser. No installation, dependencies, or build steps are required.
+To run the project locally, clone the repository using:
 
-This project is intended for educational and personal use.
+```bash
+git clone https://github.com/AmarisEpic/BlackKey.git
