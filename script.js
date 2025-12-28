@@ -264,6 +264,39 @@ const BLACKKEY = (function() {
 
             return 'CENTURIES+';
         }
-    }
+    };
     
-})
+     const BruteForceSimulator = {
+    start(password) {
+        this.stop();
+
+        if(password.length === 0) {
+            this.updateDisplay('-', 0, 'IDLE');;
+            return;
+        }
+
+        state.simulation.running = true;
+        state.simulation.attempts = 0;
+
+        const attemptsPerUpdate = Math.floor(
+            CONFIG.SIMULATION.BASE_ATTEMPTS_PER_SEC *
+            (CONFIG.SIMULATION.UPDATE_INTERVAL / 1000)
+        );
+
+        this.updateDisplay('', 0, 'CRACKING...');
+        DOM.simStatus.classList.add('cracking');
+
+        state.simulation.intervalId = setInterval(() => {
+            state.simulation.attempts += attemptsPerUpdate;
+
+            const fakeAttempt = this.generateFakeAttempt(password.length);
+
+            this.updateDisplay(
+                fakeAttempt,
+                state.simulation.attempts,
+                'CRACKING...'
+            );
+        }, CONFIG.SIMULATION.UPDATE_INTERVAL);
+    },
+}
+}) 
