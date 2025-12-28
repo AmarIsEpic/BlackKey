@@ -28,10 +28,43 @@
                     placeholder="Enter password to analyze..."
                     autocomplete="off"
                     >
+                    <button id="copy-btn" class="copy-btn" aria-label="Copy password">
+                        <span class="copy-icon">📋</span>
+                        <span class="copy-success">✓</span>
+                    </button>
                     <button id="toggle-visibility" class="toggle-btn" aria-label="Toggle password visibility">
                         <span class="eye-open">👁</span>
                         <span class="eye-closed">👁‍🗨</span>
                     </button>
+                </div>
+
+                <div class="generator-wrapper">
+                    <button id="generate-btn" class="generate-btn">
+                        <span class="btn-icon">⚡</span>
+                        <span class="btn-text">GENERATE SECURE PASSWORD</span>
+                    </button>
+                    <div class="generator-options">
+                        <label class="option-label">
+                            <input type="checkbox" id="gen-uppercase" checked>
+                            <span>A-Z</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="checkbox" id="gen-lowercase" checked>
+                            <span>a-z</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="checkbox" id="gen-numbers" checked>
+                            <span>0-9</span>
+                        </label>
+                        <label class="option-label">
+                            <input type="checkbox" id="gen-symbols" checked>
+                            <span>!@#</span>
+                        </label>
+                        <label class="option-label length-label">
+                            <span>Length:</span>
+                            <input type="number" id="gen-length" value="16" min="8" max="32">
+                        </label>
+                    </div>
                 </div>
 
                 <div class="strength-container">
@@ -48,6 +81,11 @@
                 <div class="crack-time-display">
                     <span class="crack-label">ESTIMATED CRACK TIME:</span>
                     <span class="crack-value" id="crack-time">-</span>
+                </div>
+
+                <div class="attack-indicator">
+                    <span class="attack-label">BEST ATTACK VECTOR:</span>
+                    <span class="attack-value" id="attack-type">-</span>
                 </div>
             </section>
 
@@ -75,6 +113,14 @@
                         <span class="check-text">Symbol (!@#$%^&*...)</span>
                     </li>
                 </ul>
+            </section>
+
+            <section class="history-section">
+                <h2 class="section-title">// PASSWORD HISTORY</h2>
+                <ul class="history-list" id="history-list">
+                    <li class="history-empty">No passwords analyzed yet.</li>
+                </ul>
+                <button id="clear-history-btn" class="clear-history-btn">CLEAR HISTORY</button>
             </section>
 
             <section class="terminal-section">
