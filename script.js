@@ -194,7 +194,31 @@ const BLACKKEY = (function() {
                 'asdfghjkl',
                 'zxcvbnm'
             ];
-        }
+
+            const lowerPass = password.toLowerCase();
+
+            for (const seq of sequences) {
+                for (let i = 0; i <= seq.length - 3; i++) {
+                    if (lowerPass.includes(seq.substring(i, i + 3))) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        },
+
+        isCommonPassword(password) {
+            return CONFIG.WEAK_PASSWORDS.includes(password.toLowerCase());
+        },
+
+        getStrengthLevel(score) {
+            if (score === 0) return 'empty';
+            if (score < 20) return 'veryWeak';
+            if (score < 40) return 'weak';
+            if (score < 60) return 'medium';
+            if (score < 80) return 'strong';
+            return 'veryStrong';
+        },
         
     }
     
