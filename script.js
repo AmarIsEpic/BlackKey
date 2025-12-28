@@ -108,7 +108,7 @@ const BLACKKEY = (function() {
     function cacheDOMReferences() {
         DOM.passwordInput = document.getElementById('password-input');
         DOM.toggleBtn = document.getElementById('toggle-visibility');
-        DOM.strengthFll = document.getElementById('strength-fill');
+        DOM.strengthFill = document.getElementById('strength-fill');
         DOM.scoreValue = document.getElementById('score-value');
         DOM.crackTime = document.getElementById('crack-time');
         DOM.terminalBody = document.getElementById('terminal-body');
@@ -384,5 +384,88 @@ const BLACKKEY = (function() {
             });
         }
     };
-    
+
+    const UI = {
+        update(results) {
+            this.updateStrengthBar(results.score, results.strength);
+            this.updateScore(results.score, results.strength);
+            this.updateCrackTime(results.crackTime);
+            this.updateCheckList(results.checks);
+            this.updateBackgroundGlow(results.strength);
+            this.applyEffects(results.strength);
+        },
+
+        updateStrengthBar(score, strength) {
+            DOM.strengthFill.style.width = `${score}%`;
+            DOM.strengthFill.className = 'strength-fill';
+
+            if (strength === 'veryWeak' || strength === 'weak') {
+                DOM.strengthFill.classList.add('weak');
+            } else if (strength === 'medium') {
+                DOM.strengthFill.classList.add('medium');
+            } else if (strength === 'strong' || strength === 'veryStrong') {
+                DOM.strengthFill.classList.add('strong');
+            }
+        },
+
+        updateScore(score, strength) {
+            DOM.scoreValue.textContent = score;
+            DOM.scoreValue.className = 'score-value';
+
+            if (strength === 'veryWeak' || strength === 'weak') {
+                DOM.scoreValue.classList.add('weak');
+            } else if (strength === 'medium') {
+                DOM.scoreValue.classList.add('medium');
+            }
+        },
+
+        updateCrackTime(crackTime) {
+            DOM.crackTime.textContent = crackTime;
+        },
+
+        updateCheckList(checks) {
+            const updateCheck = (element, passed) => {
+                const icon = element.querySelector('.check-icon');
+                if (passed) {
+                    element.classList.add('passed');
+                    icon.textContent = '✓';
+                } else {
+                    element.classList.remove('passed');
+                    icon.textContent = '✗';
+                }
+            };
+
+            updateCheck(DOM.checkLength, checks.length);
+            updateCheck(DOM.checkUppercase, checks.uppercase);
+            updateCheck(DOM.checkLowercase, checks.lowercase);
+            updateCheck(DOM.checkNumber, checks.number);
+            updateCheck(DOM.checkSymbol, checks.symbol);
+        },
+
+        updateBackgroundGlow(strength) {
+            DOM.backgroundGlow.className = 'background-glow';
+
+            if(strength === 'veryWeak'|| strength === 'weak'){
+                DOM.backgroundGlow.classList.add('weak');
+            } else if (strength === 'medium') {
+                DOM.backgroundGlow.classList.add('medium');
+            } else if (strength === 'strong' || strength === 'veryStrong') {
+                DOM.backgroundGlow.classList.add('strong');
+            }
+        },
+
+        applyEffects(strength) {
+            DOM.passwordInput.className = 'password-input';
+
+            if(strength === 'veryWeak') {
+                DOM.passwordInput.classList.add('weak');
+                this.triggerShake();
+                this.triggerGlitch();
+            } else if (strength === 'weak') {
+                DOM.passwordInput.classList.add('weak');
+            } else if (strength === 'medium') {
+                DOM.passwordInput.classList.add('medium');
+            }
+        }
+    }
 }) 
