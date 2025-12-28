@@ -125,6 +125,12 @@ const BLACKKEY = (function() {
         DOM.checkLowercase = document.getElementById('check-lowercase');
         DOM.checkNumber = document.getElementById('check-number');
         DOM.checkSymbol = document.getElementById('check-symbol');
+
+        DOM.copyBtn = document.getElementById('copy-btn');
+        DOM.generateBtn = document.getElementById('generate-btn');
+        DOM.attackType = document.getElementById('attack-type');
+        DOM.historyList = document.getElementById('history-list');
+        DOM.clearHistoryBtn = document.getElementById('clear-history-btn');
     }
 
     const PasswordGenerator = {
@@ -161,7 +167,7 @@ const BLACKKEY = (function() {
 
     const PasswordHistory = {
         maxItems: 5,
-        storageKey: 'backkey_history',
+        storageKey: 'blackkey_history',
 
         load() {
             try {
@@ -176,9 +182,9 @@ const BLACKKEY = (function() {
             try {
                 sessionStorage.setItem(this.storageKey, JSON.stringify(history));
             } catch (e) {
-                console.warm('Failed to save history:', e);
+                console.warn('Failed to save history:', e);
             }
-        }
+        },
 
         add(password, score, strength) {
             if (!password || password.length === 0) return;
@@ -226,19 +232,21 @@ const BLACKKEY = (function() {
                 return `
                 <li class="history-item ${strengthClass}" data-password="${item.password}">
                 <span class="history-password">${maskedPassword}</span>
-                <span class="history-score${item.score}/100</span>
+                <span class="history-score">${item.score}/100</span>
                 </li>`;
             }).join('');
         }
-    }
+    };
+
     const PasswordAnalyzer = {
         analyze(password) {
             const checks = this.runChecks(password);
             const score = this.calculateScore(password, checks);
             const strength = this.getStrengthLevel(score);
             const crackTime = this.estimateCrackTime(password);
+            const attackType = this.getAttackType(password, strength);
 
-            return { checks, score, strength, crackTime };
+            return { checks, score, strength, crackTime, attackType };
         },
 
         runChecks(password) {
@@ -323,6 +331,28 @@ const BLACKKEY = (function() {
             if (score < 60) return 'medium';
             if (score < 80) return 'strong';
             return 'veryStrong';
+        },
+        
+        getAttackType(password, strength) {
+            if(password.length === 0) return { type: '-', class: '' };
+
+            if(CONFIG.WEAK_PASSWORDS.includes(password.toLowerCase())) {
+                return { type: 'DICTIONARY (instant)', class: 'dictionary' };
+            }
+
+            if (strength === 'veryWeak' || strength === 'weak') {
+                return { type: 'DICTIONARY + RULES', class: 'dictionary' };
+            }
+
+            if (strength === 'medium') {
+                return { type: 'HYBRID ATTACK', class: 'hybrid' };
+            }
+
+            if (strength === 'strong') {
+                return { type: 'BRUTE-FORCE (slow)', class: 'bruteforce' };
+            }
+
+            return { type: 'NOT VIABLE', class: 'bruteforce'};
         },
         
         estimateCrackTime(password) {
