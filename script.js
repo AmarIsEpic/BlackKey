@@ -156,8 +156,80 @@ const BLACKKEY = (function() {
         getLength() {
             const length = parseInt(document.getElementById('gen-length').value, 10);
             return Math.min(32, Math.max(8, length));
+        }    
+    };
+
+    const PasswordHistory = {
+        maxItems: 5,
+        storageKey: 'backkey_history',
+
+        load() {
+            try {
+                const stored = sessionStorage.getItem(this.storageKey);
+                return stored ? JSON.parse(stored) : [];
+            } catch (e) {
+                return [];
+            }
+        },
+
+        save(history) {
+            try {
+                sessionStorage.setItem(this.storageKey, JSON.stringify(history));
+            } catch (e) {
+                console.warm('Failed to save history:', e);
+            }
         }
-        
+
+        add(password, score, strength) {
+            if (!password || password.length === 0) return;
+
+            let history = this.load();
+
+            history = history.filter(item => item.password !== password);
+
+            history.unshift({
+                password: password,
+                score: score,
+                strength: strength,
+                timestamp: Date.now()
+            });
+
+            if(history.length > this.maxItems) {
+                history = history.slice(0, this.maxItems);
+            }
+
+            this.save(history);
+            this.render();
+        },
+
+        clear() {
+            sessionStorage.removeItem(this.storageKey);
+            this.render();
+        },
+
+        render() {
+            const history = this.load();
+            const list = DOM.historyList;
+
+            if(history.length === 0) {
+                list.innerHTML = `<li class="history-empty">No passwords analyzed yet.</li>`;
+                return;
+            }
+
+            list.innerHTML = history.map(item => {
+                const strengthClass = 
+                    item.strength === 'veryWeak' || item.strength === 'weak' ? 'weak' :
+                    item.strength === 'medium' ? 'medium' : 'strong';
+
+                const maskedPassword = item.password.substring(0, 3) + '•'.repeat(Math.max(0, item.password.length - 3));
+
+                return `
+                <li class="history-item ${strengthClass}" data-password="${item.password}">
+                <span class="history-password">${maskedPassword}</span>
+                <span class="history-score${item.score}/100</span>
+                </li>`;
+            }).join('');
+        }
     }
     const PasswordAnalyzer = {
         analyze(password) {
